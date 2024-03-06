@@ -14,6 +14,19 @@ public class LinkedListImplementation {
         this.size = 0;
     }
 
+    public void addAtBeginning(int data){
+        Node newNode = new Node(data);
+        if(head == null){
+            this.head = newNode;
+            this.tail = newNode;
+            size++;
+        } else {
+            newNode.setNext(head);
+            this.head = newNode;
+            size++;
+        }
+    }
+
     // Adding a node at the end 
     // parameter is just integer data
     public void addAtEnd(int data){
@@ -30,18 +43,6 @@ public class LinkedListImplementation {
         }
     }
 
-    public void addAtBeginning(int data){
-        Node newNode = new Node(data);
-        if(head == null){
-            this.head = newNode;
-            this.tail = newNode;
-            size++;
-        } else {
-            newNode.setNext(head);
-            this.head = newNode;
-            size++;
-        }
-    }
 
     public void addInBetween(int data, int index){
         Node newNode = new Node(data);
@@ -97,7 +98,7 @@ public class LinkedListImplementation {
             size--;
         }
     }
-
+    // as its index, but the best practice was start it from 1... 
     public void deleteInBetween(int index){
         if (head == null){
             return;
@@ -135,10 +136,10 @@ public class LinkedListImplementation {
         }
 
         // Find the nodes at their positions
-        Node prev1 = null, curr1 = head;  // Dummy node
+        Node prev1 = null, curr1 = head;  // Dummy node??
         for (int i = 1; i < position1; i++) {
-            prev1 = curr1;
-            curr1 = curr1.getNext();
+            prev1 = curr1;    // get the prev node
+            curr1 = curr1.getNext(); // get the node that should be swapped
         }
 
         Node prev2 = null, curr2 = head;
@@ -151,7 +152,7 @@ public class LinkedListImplementation {
         if (prev1 != null) {
             prev1.setNext(curr2);
         } else {
-            head = curr2;
+            head = curr2;   //1st node
         }
 
         if (prev2 != null) {

@@ -7,6 +7,11 @@ public class DoublyLinkedList {
         private Node prev;
         private Node next;
 
+        public Node (int data){
+            this.data = data;
+            this.prev = this.next = null;
+        }
+
         public Node(Integer data, Node prev, Node next) {
             this.data = data;
             this.prev = prev;
@@ -27,7 +32,7 @@ public class DoublyLinkedList {
 
     public DoublyLinkedList() {
         header = new Node(null, null, null);
-        trailer = new Node(null, header, null);
+        trailer = new Node(null, header, null);  // tail is linked to its header
         header.setNext(trailer);
         size = 0;
     }
@@ -36,6 +41,7 @@ public class DoublyLinkedList {
     public boolean isEmpty() { return size == 0; }
 
     public void addFirst(Integer data) {
+        // (data, header.setNext, header.getNext.setPrev)
         addBetween(data, header, header.getNext());
     }
 
@@ -43,35 +49,49 @@ public class DoublyLinkedList {
         addBetween(data, trailer.getPrev(), trailer);
     }
 
+   
+
     private void addBetween(Integer data, Node prev, Node next) {
         Node newNode = new Node(data, prev, next);
+        // System.err.println("next" + next.getData());
         prev.setNext(newNode);
         next.setPrev(newNode);
         size++;
     }
 
-    // Add between nodes based on its position
-    public void addBetween(Integer data, int position) throws IndexOutOfBoundsException {
+    // Add between nodes based on its index/position
+    public void addAfterPosition(Integer data, int position) throws IndexOutOfBoundsException {
         if (position < 0 || position > size) {
             throw new IndexOutOfBoundsException("Invalid position");
         }
 
         Node current;
         // Decide whether to traverse from the beginning or end based on the position
-        if (position <= size / 2) {
+        if (position < size / 2) {
             current = header;
-            for (int i = 0; i < position; i++) {
+            // best practice was star i=1...!!!
+            for (int i = 1; i <= position; i++) {
                 current = current.getNext();
             }
         } else {
             current = trailer;
-            for (int i = size; i > position; i--) {
+            for (int i = size; i >= position; i--) {
                 current = current.getPrev();
             }
         }
         addBetween(data, current, current.getNext());
     }
 
+    private void removeNode(Node node) {
+        Node prev = node.getPrev();
+        Node next = node.getNext();
+
+        prev.setNext(next);
+        next.setPrev(prev);
+
+        size--;
+    }
+    
     public void removeFromBeginning() {
         if (!isEmpty()) {
             removeNode(header.getNext());
@@ -93,36 +113,26 @@ public class DoublyLinkedList {
         System.out.println();
     }
     
-    private void removeNode(Node node) {
-        Node prev = node.getPrev();
-        Node next = node.getNext();
-
-        prev.setNext(next);
-        next.setPrev(prev);
-
-        size--;
-    }
 
     // Concatenating/Linking two doubly list
     public void concatenate(DoublyLinkedList secondList) {
+        // checking
         if (secondList == null || secondList.isEmpty()) {
             return;
         }
 
         // Connect the end of this list to the beginning of the other list
-        Node lastNodeThisList = trailer.getPrev();
-        Node firstNodesecondList = secondList.header.getNext();
+        Node lastNodeOfFirstList = trailer.getPrev();          // header <-> 1 <-> 2 <-> 3(lastNodeofFirstList) <-> trailer 
+        Node firstNodeOfSecondList = secondList.header.getNext();  // header <-> 4(firstNodeOfSecondList) <-> 5 <-> 6 <-> trailer 
 
-        lastNodeThisList.setNext(firstNodesecondList);
-        firstNodesecondList.setPrev(lastNodeThisList);
 
-        // Update the size after concatenation
+        // 1st: header -> 1, 3, 4  -> trailer
+         // header -> 5, 6, 7 -> trailer
+        // referencing to each other/linking
+        lastNodeOfFirstList.setNext(firstNodeOfSecondList);
+        firstNodeOfSecondList.setPrev(lastNodeOfFirstList);
+
         size += secondList.size;
-
-        // Clear the other list
-        secondList.header.setNext(secondList.trailer);
-        secondList.trailer.setPrev(secondList.header);
-        secondList.size = 0;
     }
 
 
@@ -133,25 +143,26 @@ public class DoublyLinkedList {
         myDoublyLinkedList.addLast(20);
         myDoublyLinkedList.addFirst(1);
         myDoublyLinkedList.addLast(30);
-        myDoublyLinkedList.addBetween(16, 2);
-
+        myDoublyLinkedList.addAfterPosition(16, 2);
+        myDoublyLinkedList.addLast(88);
         System.out.println("Initial insertion:");
         myDoublyLinkedList.displayList();
 
-        myDoublyLinkedList.removeFromBeginning();
-        myDoublyLinkedList.removeFromLast();
-        myDoublyLinkedList.displayList();
+        // myDoublyLinkedList.removeFromBeginning();
+        // myDoublyLinkedList.removeFromLast();
+        System.out.println("After deletion:");
+        // myDoublyLinkedList.displayList();
         
         //concatenating 2 doubly linked list
         System.out.println("Concatenating 2 doubly linked list");
         DoublyLinkedList L_List = new DoublyLinkedList();
-        L_List.addLast(10);
-        L_List.addLast(20);
-        L_List.addLast(30);
+        L_List.addLast(88);
+        L_List.addLast(49);
+        L_List.addLast(23);
 
         DoublyLinkedList M_List = new DoublyLinkedList();
-        M_List.addLast(40);
-        M_List.addLast(50);
+        M_List.addLast(99);
+        M_List.addLast(92);
 
         System.out.println("L List:");
         L_List.displayList();

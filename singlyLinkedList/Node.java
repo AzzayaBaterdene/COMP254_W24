@@ -2,7 +2,7 @@ package singlyLinkedList;
 
 public class Node {
     private int data;
-    private Node nextItem; //self-referential data type!
+    private Node nextItem;  //self-referential data type!
 
     public Node (){};
 
